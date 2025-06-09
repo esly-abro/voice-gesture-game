@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmConnect USSD System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://cdnjs.cloudflare.com/ajax/libs/dummy/image/farm-background.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .scene-container {
+            position: relative;
+            width: 500px;
+            height: 600px;
+        }
+        
+        /* Farmer's hands */
+        .hand-left {
+            position: absolute;
+            width: 120px;
+            height: 200px;
+            background: #c68c53;
+            border-radius: 30px 10px 10px 30px;
+            transform: rotate(15deg);
+            left: 40px;
+            top: 200px;
+            z-index: 1;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3);
+        }
+        
+        .hand-right {
+            position: absolute;
+            width: 120px;
+            height: 200px;
+            background: #c68c53;
+            border-radius: 10px 30px 30px 10px;
+            transform: rotate(-15deg);
+            right: 40px;
+            top: 200px;
+            z-index: 3;
+            box-shadow: inset 5px -5px 10px rgba(0,0,0,0.3);
+        }
+        
+        .finger-left-1 {
+            position: absolute;
+            width: 35px;
+            height: 80px;
+            background: #c68c53;
+            border-radius: 20px;
+            transform: rotate(-5deg);
+            left: 100px;
+            top: 140px;
+            z-index: 2;
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .finger-left-2 {
+            position: absolute;
+            width: 35px;
+            height: 90px;
+            background: #c68c53;
+            border-radius: 20px;
+            transform: rotate(-15deg);
+            left: 70px;
+            top: 130px;
+            z-index: 2;
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .finger-right-1 {
+            position: absolute;
+            width: 35px;
+            height: 80px;
+            background: #c68c53;
+            border-radius: 20px;
+            transform: rotate(5deg);
+            right: 100px;
+            top: 140px;
+            z-index: 4;
+            box-shadow: inset 2px -2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .finger-right-2 {
+            position: absolute;
+            width: 35px;
+            height: 90px;
+            background: #c68c53;
+            border-radius: 20px;
+            transform: rotate(15deg);
+            right: 70px;
+            top: 130px;
+            z-index: 4;
+            box-shadow: inset 2px -2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* Thumb details */
+        .thumb-left {
+            position: absolute;
+            width: 45px;
+            height: 70px;
+            background: #c68c53;
+            border-radius: 20px;
+            transform: rotate(45deg);
+            left: 110px;
+            top: 250px;
+            z-index: 4;
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .thumb-right {
+            position: absolute;
+            width: 45px;
+            height: 70px;
+            background: #c68c53;
+            border-radius: 20px;
+            transform: rotate(-45deg);
+            right: 110px;
+            top: 250px;
+            z-index: 4;
+            box-shadow: inset 2px -2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* Hand weathering details */
+        .hand-detail {
+            position: absolute;
+            background: #b37944;
+            border-radius: 5px;
+            z-index: 5;
+        }
+        
+        .dirt-1 {
+            width: 35px;
+            height: 15px;
+            left: 80px;
+            top: 230px;
+            transform: rotate(15deg);
+        }
+        
+        .dirt-2 {
+            width: 25px;
+            height: 10px;
+            right: 90px;
+            top: 240px;
+            transform: rotate(-10deg);
+        }
+        
+        .dirt-3 {
+            width: 20px;
+            height: 15px;
+            left: 130px;
+            top: 280px;
+            transform: rotate(25deg);
+        }
+        
+        .dirt-4 {
+            width: 15px;
+            height: 8px;
+            right: 75px;
+            top: 190px;
+        }
+        
+        /* Farmer's sleeves */
+        .sleeve-left {
+            position: absolute;
+            width: 140px;
+            height: 80px;
+            background: #3a5f0b;
+            border-radius: 30px 30px 0 0;
+            transform: rotate(15deg);
+            left: 20px;
+            top: 370px;
+            z-index: 0;
+        }
+        
+        .sleeve-right {
+            position: absolute;
+            width: 140px;
+            height: 80px;
+            background: #3a5f0b;
+            border-radius: 30px 30px 0 0;
+            transform: rotate(-15deg);
+            right: 20px;
+            top: 370px;
+            z-index: 0;
+        }
+        
+        .phone-container {
+            position: relative;
+            width: 280px;
+            height: 580px;
+            z-index: 2;
+            margin: 0 auto;
+        }
+        
+        .phone {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #2d2d2d, #212121);
+            border-radius: 36px;
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.1),
+                inset 0 -3px 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #444;
+        }
+        
+        .phone-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding: 15px 10px;
+        }
+        
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 25px;
+            background-color: #000;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 3;
+        }
+        
+        .speaker {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 5px;
+            background-color: #333;
+            border-radius: 3px;
+            z-index: 4;
+        }
+        
+        .camera {
+            position: absolute;
+            top: 8px;
+            right: 50px;
+            width: 7px;
+            height: 7px;
+            background-color: #222;
+            border-radius: 50%;
+            z-index: 4;
+            box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.9);
+        }
+        
+        .screen {
+            width: 100%;
+            height: 68%;
+            background-color: #c8d6ca;
+            border-radius: 8px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #000;
+            margin-top: 10px;
+            border: 1px solid #444;
+            padding: 12px 8px;
+            position: relative;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .navigation-keys {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 12px 0;
+        }
+        
+        .nav-key {
+            background: linear-gradient(145deg, #3a3a3a, #282828);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            user-select: none;
+        }
+        
+        .nav-key:active {
+            box-shadow: 
+                inset 0 1px 3px rgba(0, 0, 0, 0.5),
+                0 1px 1px rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, #282828, #3a3a3a);
+        }
+        
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 5px;
+        }
+        
+        .key {
+            background: linear-gradient(145deg, #3a3a3a, #282828);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin: 0 auto;
+            user-select: none;
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        
+        .key:active {
+            transform: translateY(1px);
+            box-shadow: 
+                inset 0 1px 3px rgba(0, 0, 0, 0.5),
+                0 1px 1px rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, #282828, #3a3a3a);
+        }
+        
+        .call-key {
+            background: linear-gradient(145deg, #2e7d32, #1b5e20);
+            grid-column: span 3;
+            width: 80px;
+            border-radius: 20px;
+            margin: 10px auto 0;
+            font-weight: bold;
+        }
+        
+        .call-key:active {
+            background: linear-gradient(145deg, #1b5e20, #2e7d32);
+        }
+        
+        .star-key, .hash-key {
+            background: linear-gradient(145deg, #505050, #383838);
+        }
+        
+        .star-key:active, .hash-key:active {
+            background: linear-gradient(145deg, #383838, #505050);
+        }
+        
+        .screen-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+        
+        .ussd-code {
+            color: #0066cc;
+            font-weight: bold;
+            text-align: center;
+            margin: 8px 0;
+        }
+        
+        .option {
+            margin: 5px 0;
+            padding-left: 15px;
+        }
+        
+        .subtext {
+            font-size: 9px;
+            line-height: 1;
+            margin-top: 2px;
+        }
+        
+        .power-button {
+            position: absolute;
+            right: -3px;
+            top: 100px;
+            width: 5px;
+            height: 40px;
+            background-color: #444;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+            z-index: 2;
+        }
+        
+        .volume-button {
+            position: absolute;
+            left: -3px;
+            top: 80px;
+            width: 5px;
+            height: 60px;
+            background-color: #444;
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+            z-index: 2;
+        }
+        
+        /* Phone bottom elements */
+        .bottom-port {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 5px;
+            background-color: #1a1a1a;
+            border-radius: 3px;
+            z-index: 2;
+        }
+        
+        /* Farmland background */
+        .farmland-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(0deg, #8b5d33 0%, #6b4423 100%);
+            z-index: -1;
+        }
+        
+        /* Add some grain texture to simulate soil */
+        .soil-texture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: radial-gradient(#553618 2px, transparent 2px);
+            background-size: 16px 16px;
+            opacity: 0.2;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="scene-container">
+        <!-- Farmer's hands elements -->
+        <div class="farmland-bg"></div>
+        <div class="soil-texture"></div>
+        <div class="hand-left"></div>
+        <div class="hand-right"></div>
+        <div class="finger-left-1"></div>
+        <div class="finger-left-2"></div>
+        <div class="finger-right-1"></div>
+        <div class="finger-right-2"></div>
+        <div class="thumb-left"></div>
+        <div class="thumb-right"></div>
+        <div class="sleeve-left"></div>
+        <div class="sleeve-right"></div>
+        
+        <!-- Weathered hands details -->
+        <div class="hand-detail dirt-1"></div>
+        <div class="hand-detail dirt-2"></div>
+        <div class="hand-detail dirt-3"></div>
+        <div class="hand-detail dirt-4"></div>
+        
+        <div class="phone-container">
+            <div class="phone">
+                <div class="notch"></div>
+                <div class="speaker"></div>
+                <div class="camera"></div>
+                <div class="power-button"></div>
+                <div class="volume-button"></div>
+                
+                <div class="phone-inner">
+                    <div class="screen" id="screen">
+                        <div class="screen-header">FarmConnect</div>
+                        <div id="ussd-content">
+                            <div style="text-align: center;">Welcome to FarmConnect USSD</div>
+                            <div style="text-align: center;">Connecting farmers directly with consumers</div>
+                            <div class="ussd-code">Dial *123# to begin</div>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-keys">
+                        <div class="nav-key" id="back-key">←</div>
+                        <div class="nav-key" id="select-key">OK</div>
+                    </div>
+                    
+                    <div class="keypad">
+                        <div class="key" data-value="1">1</div>
+                        <div class="key" data-value="2">
+                            2
+                            <div class="subtext">ABC</div>
+                        </div>
+                        <div class="key" data-value="3">
+                            3
+                            <div class="subtext">DEF</div>
+                        </div>
+                        <div class="key" data-value="4">
+                            4
+                            <div class="subtext">GHI</div>
+                        </div>
+                        <div class="key" data-value="5">
+                            5
+                            <div class="subtext">JKL</div>
+                        </div>
+                        <div class="key" data-value="6">
+                            6
+                            <div class="subtext">MNO</div>
+                        </div>
+                        <div class="key" data-value="7">
+                            7
+                            <div class="subtext">PQRS</div>
+                        </div>
+                        <div class="key" data-value="8">
+                            8
+                            <div class="subtext">TUV</div>
+                        </div>
+                        <div class="key" data-value="9">
+                            9
+                            <div class="subtext">WXYZ</div>
+                        </div>
+                        <div class="key star-key" data-value="*">*</div>
+                        <div class="key" data-value="0">0</div>
+                        <div class="key hash-key" data-value="#">#</div>
+                    </div>
+                    
+                    <div class="call-key key" id="dial-key">Dial</div>
+                </div>
+                <div class="bottom-port"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // USSD application states
+        const states = {
+            INITIAL: 0,
+            MAIN_MENU: 1,
+            ADD_GOODS: 2,
+            VIEW_GOODS: 3,
+            VIEW_ORDERS: 4,
+            ENTER_PRODUCT_NAME: 5,
+            ENTER_PRODUCT_QUANTITY: 6,
+            ENTER_PRODUCT_PRICE: 7,
+            CONFIRM_PRODUCT: 8
+        };
+        
+        let currentState = states.INITIAL;
+        let inputBuffer = '';
+        let products = [];
+        let orders = [
+            {customer: "John Doe", location: "Nairobi", phone: "0722123456", product: "Tomatoes", quantity: "10kg"},
+            {customer: "Jane Smith", location: "Mombasa", phone: "0733123456", product: "Maize", quantity: "25kg"}
+        ];
+        
+        // Sample products
+        products.push({name: "Tomatoes", quantity: "50kg", price: "KSh 50/kg"});
+        products.push({name: "Maize", quantity: "100kg", price: "KSh 30/kg"});
+        
+        const screen = document.getElementById('screen');
+        const ussdContent = document.getElementById('ussd-content');
+        const dialKey = document.getElementById('dial-key');
+        const backKey = document.getElementById('back-key');
+        const selectKey = document.getElementById('select-key');
+        const keys = document.querySelectorAll('.key[data-value]');
+        
+        // Handle key presses
+        keys.forEach(key => {
+            key.addEventListener('click', () => {
+                const value = key.getAttribute('data-value');
+                handleInput(value);
+            });
+        });
+        
+        // Handle dial key
+        dialKey.addEventListener('click', () => {
+            if (currentState === states.INITIAL && inputBuffer === '*123#') {
+                showMainMenu();
+            } else if (currentState !== states.INITIAL) {
+                handleInput('#');
+            }
+        });
+        
+        // Handle back key
+        backKey.addEventListener('click', () => {
+            if (inputBuffer.length > 0) {
+                inputBuffer = inputBuffer.slice(0, -1);
+                updateScreen();
+            } else if (currentState !== states.INITIAL && currentState !== states.MAIN_MENU) {
+                showMainMenu();
+            }
+        });
+        
+        // Handle select key
+        selectKey.addEventListener('click', () => {
+            if (currentState === states.MAIN_MENU && inputBuffer.length > 0) {
+                handleMainMenuSelection();
+            } else if (currentState === states.VIEW_GOODS || currentState === states.VIEW_ORDERS) {
+                showMainMenu();
+            } else if (currentState === states.CONFIRM_PRODUCT && inputBuffer === '1') {
+                // Save product
+                const product = JSON.parse(sessionStorage.getItem('currentProduct'));
+                products.push(product);
+                sessionStorage.removeItem('currentProduct');
+                showMessage("Product added successfully!");
+                setTimeout(showMainMenu, 2000);
+            } else if (currentState === states.CONFIRM_PRODUCT && inputBuffer === '2') {
+                // Cancel
+                sessionStorage.removeItem('currentProduct');
+                showMainMenu();
+            } else if (inputBuffer.length > 0) {
+                handleInput('#');
+            }
+        });
+        
+        function handleInput(value) {
+            if (value === '*' || value === '#') {
+                if (value === '#' && currentState !== states.INITIAL) {
+                    processInput();
+                } else {
+                    inputBuffer += value;
+                    updateScreen();
+                }
+            } else {
+                inputBuffer += value;
+                updateScreen();
+            }
+        }
+        
+        function processInput() {
+            switch(currentState) {
+                case states.INITIAL:
+                    if (inputBuffer === '*123#') {
+                        showMainMenu();
+                    } else {
+                        showMessage("Invalid USSD code. Dial *123# to begin.");
+                        inputBuffer = '';
+                    }
+                    break;
+                    
+                case states.MAIN_MENU:
+                    handleMainMenuSelection();
+                    break;
+                    
+                case states.ENTER_PRODUCT_NAME:
+                    sessionStorage.setItem('currentProduct', JSON.stringify({
+                        name: inputBuffer
+                    }));
+                    currentState = states.ENTER_PRODUCT_QUANTITY;
+                    showPrompt("Enter product quantity (e.g., 10kg):");
+                    inputBuffer = '';
+                    break;
+                    
+                case states.ENTER_PRODUCT_QUANTITY:
+                    const product = JSON.parse(sessionStorage.getItem('currentProduct'));
+                    product.quantity = inputBuffer;
+                    sessionStorage.setItem('currentProduct', JSON.stringify(product));
+                    currentState = states.ENTER_PRODUCT_PRICE;
+                    showPrompt("Enter price per unit (e.g., KSh 50/kg):");
+                    inputBuffer = '';
+                    break;
+                    
+                case states.ENTER_PRODUCT_PRICE:
+                    const productWithPrice = JSON.parse(sessionStorage.getItem('currentProduct'));
+                    productWithPrice.price = inputBuffer;
+                    sessionStorage.setItem('currentProduct', JSON.stringify(productWithPrice));
+                    currentState = states.CONFIRM_PRODUCT;
+                    showProductConfirmation(productWithPrice);
+                    inputBuffer = '';
+                    break;
+            }
+        }
+        
+        function handleMainMenuSelection() {
+            const option = inputBuffer;
+            inputBuffer = '';
+            
+            switch(option) {
+                case '1':
+                    currentState = states.ENTER_PRODUCT_NAME;
+                    showPrompt("Enter product name:");
+                    break;
+                    
+                case '2':
+                    currentState = states.VIEW_GOODS;
+                    showProducts();
+                    break;
+                    
+                case '3':
+                    currentState = states.VIEW_ORDERS;
+                    showOrders();
+                    break;
+                    
+                default:
+                    showMessage("Invalid selection");
+                    setTimeout(showMainMenu, 1500);
+                    break;
+            }
+        }
+        
+        function showMainMenu() {
+            currentState = states.MAIN_MENU;
+            inputBuffer = '';
+            ussdContent.innerHTML = `
+                <div class="screen-header">FarmConnect Main Menu</div>
+                <div class="option">1. Add goods details</div>
+                <div class="option">2. See my goods</div>
+                <div class="option">3. Orders by consumer</div>
+                <div style="margin-top: 10px;">Enter option and press OK</div>
+            `;
+            screen.scrollTop = screen.scrollHeight;
+        }
+        
+        function showPrompt(promptText) {
+            ussdContent.innerHTML = `
+                <div class="screen-header">FarmConnect</div>
+                <div style="margin-bottom: 10px;">${promptText}</div>
+                <div>Input: ${inputBuffer}</div>
+            `;
+            screen.scrollTop = screen.scrollHeight;
+        }
+        
+        function showMessage(message) {
+            ussdContent.innerHTML = `
+                <div class="screen-header">FarmConnect</div>
+                <div style="text-align: center; margin-top: 15px;">${message}</div>
+            `;
+            screen.scrollTop = screen.scrollHeight;
+        }
+        
+        function showProducts() {
+            let productsHTML = '<div class="screen-header">My Products</div>';
+            
+            if (products.length === 0) {
+                productsHTML += '<div style="text-align: center; margin-top: 15px;">No products added yet.</div>';
+            } else {
+                products.forEach((product, index) => {
+                    productsHTML += `
+                        <div class="option">${index + 1}. ${product.name}</div>
+                        <div style="padding-left: 25px;">Quantity: ${product.quantity}</div>
+                        <div style="padding-left: 25px; margin-bottom: 10px;">Price: ${product.price}</div>
+                    `;
+                });
+            }
+            
+            productsHTML += '<div style="text-align: center; margin-top: 10px;">Press OK to return</div>';
+            ussdContent.innerHTML = productsHTML;
+            screen.scrollTop = screen.scrollHeight;
+        }
+        
+        function showOrders() {
+            let ordersHTML = '<div class="screen-header">Customer Orders</div>';
+            
+            if (orders.length === 0) {
+                ordersHTML += '<div style="text-align: center; margin-top: 15px;">No orders yet.</div>';
+            } else {
+                orders.forEach((order, index) => {
+                    ordersHTML += `
+                        <div class="option">${index + 1}. ${order.customer}</div>
+                        <div style="padding-left: 25px;">Location: ${order.location}</div>
+                        <div style="padding-left: 25px;">Phone: ${order.phone}</div>
+                        <div style="padding-left: 25px;">Product: ${order.product}</div>
+                        <div style="padding-left: 25px; margin-bottom: 10px;">Quantity: ${order.quantity}</div>
+                    `;
+                });
+            }
+            
+            ordersHTML += '<div style="text-align: center; margin-top: 10px;">Press OK to return</div>';
+            ussdContent.innerHTML = ordersHTML;
+            screen.scrollTop = screen.scrollHeight;
+        }
+        
+        function showProductConfirmation(product) {
+            ussdContent.innerHTML = `
+                <div class="screen-header">Confirm Product</div>
+                <div style="margin: 5px 0;">Name: ${product.name}</div>
+                <div style="margin: 5px 0;">Quantity: ${product.quantity}</div>
+                <div style="margin: 5px 0;">Price: ${product.price}</div>
+                <div class="option">1. Confirm</div>
+                <div class="option">2. Cancel</div>
+                <div style="margin-top: 10px;">Select option and press OK</div>
+            `;
+            screen.scrollTop = screen.scrollHeight;
+        }
+        
+        function updateScreen() {
+            if (currentState === states.INITIAL) {
+                ussdContent.innerHTML = `
+                    <div style="text-align: center;">Welcome to FarmConnect USSD</div>
+                    <div style="text-align: center;">Connecting farmers directly with consumers</div>
+                    <div class="ussd-code">Dial *123# to begin</div>
+                    <div style="text-align: center; margin-top: 10px;">Input: ${inputBuffer}</div>
+                `;
+            } else {
+                const content = ussdContent.innerHTML.split('<div>Input:')[0];
+                ussdContent.innerHTML = content + `<div style="margin-top: 10px;">Input: ${inputBuffer}</div>`;
+            }
+            screen.scrollTop = screen.scrollHeight;
+        }
+    </script>
+</body>
+</html>
